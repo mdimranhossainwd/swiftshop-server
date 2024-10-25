@@ -26,6 +26,15 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    const dbCollection = client.db("swiftshopDB");
+    const featuresCollection = dbCollection.collection("features");
+
+    // Get Features Product All Data
+    app.get("/swiftshop/api/v1/features", async (req, res) => {
+      const cursor = await featuresCollection.find().toArray();
+      res.send(cursor);
+    });
+
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
