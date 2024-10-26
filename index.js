@@ -3,7 +3,7 @@ const app = express();
 require("dotenv").config();
 const cors = require("cors");
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const corsOptions = {
   origin: ["http://localhost:5173", "http://localhost:5174"],
@@ -32,6 +32,14 @@ async function run() {
     // Get Features Product All Data
     app.get("/swiftshop/api/v1/features", async (req, res) => {
       const cursor = await featuresCollection.find().toArray();
+      res.send(cursor);
+    });
+
+    // Get Specific Features Product Data
+    app.get("/swiftshop/api/v1/features/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const cursor = await featuresCollection.findOne(query);
       res.send(cursor);
     });
 
