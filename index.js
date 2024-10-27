@@ -28,6 +28,14 @@ async function run() {
   try {
     const dbCollection = client.db("swiftshopDB");
     const featuresCollection = dbCollection.collection("features");
+    const usersCollection = dbCollection.collection("users");
+
+    // User's Data Saved in DB
+    app.post("/swiftshop/api/v1/users", async (req, res) => {
+      const body = req.body;
+      const result = await usersCollection.insertOne(body);
+      res.send(result);
+    });
 
     // Get Features Product All Data
     app.get("/swiftshop/api/v1/features", async (req, res) => {
