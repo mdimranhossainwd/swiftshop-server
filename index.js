@@ -29,6 +29,7 @@ async function run() {
     const dbCollection = client.db("swiftshopDB");
     const featuresCollection = dbCollection.collection("features");
     const usersCollection = dbCollection.collection("users");
+    const blogsCollection = dbCollection.collection("blogs");
 
     // User's Data Saved in DB
     app.post("/swiftshop/api/v1/users", async (req, res) => {
@@ -48,6 +49,12 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const cursor = await featuresCollection.findOne(query);
+      res.send(cursor);
+    });
+
+    // Get Blogs Data
+    app.get("/swiftshop/api/v1/blogs", async (req, res) => {
+      const cursor = await blogsCollection.find().toArray();
       res.send(cursor);
     });
 
