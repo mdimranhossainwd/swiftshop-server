@@ -29,7 +29,15 @@ async function run() {
     const dbCollection = client.db("swiftshopDB");
     const featuresCollection = dbCollection.collection("features");
     const usersCollection = dbCollection.collection("users");
+    const ordersCollection = dbCollection.collection("orders");
     const blogsCollection = dbCollection.collection("blogs");
+
+    // User's Order Data
+    app.post("/swiftshop/api/v1/orders", async (req, res) => {
+      const body = req.body;
+      const result = await ordersCollection.insertOne(body);
+      res.send(result);
+    });
 
     // User's Data Saved in DB
     app.post("/swiftshop/api/v1/users", async (req, res) => {
