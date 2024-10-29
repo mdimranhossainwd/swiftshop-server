@@ -39,6 +39,12 @@ async function run() {
       res.send(result);
     });
 
+    // Get All Orders Product All Data
+    app.get("/swiftshop/api/v1/orders", async (req, res) => {
+      const cursor = await ordersCollection.find().toArray();
+      res.send(cursor);
+    });
+
     // User's Data Saved in DB
     app.post("/swiftshop/api/v1/users", async (req, res) => {
       const body = req.body;
