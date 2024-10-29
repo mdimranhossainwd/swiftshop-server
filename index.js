@@ -53,6 +53,20 @@ async function run() {
       res.send(cursor);
     });
 
+    // Order Product data update
+    app.put("/swiftshop/api/v1/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const addProductData = req.body;
+      const updateDoc = {
+        $set: {
+          ...addProductData,
+        },
+      };
+      const result = await ordersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     // User's Data Saved in DB
     app.post("/swiftshop/api/v1/users", async (req, res) => {
       const body = req.body;
