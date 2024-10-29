@@ -88,6 +88,14 @@ async function run() {
       res.send(cursor);
     });
 
+    // Delete Specific Features Product Data
+    app.delete("/swiftshop/api/v1/features/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const cursor = await featuresCollection.deleteOne(query);
+      res.send(cursor);
+    });
+
     // Get Blogs Data
     app.get("/swiftshop/api/v1/blogs", async (req, res) => {
       const cursor = await blogsCollection.find().toArray();
