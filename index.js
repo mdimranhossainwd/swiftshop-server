@@ -45,6 +45,14 @@ async function run() {
       res.send(cursor);
     });
 
+    // Get User's Specific Order Product Data
+    app.get("/swiftshop/api/v1/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const cursor = await ordersCollection.findOne(query);
+      res.send(cursor);
+    });
+
     // User's Data Saved in DB
     app.post("/swiftshop/api/v1/users", async (req, res) => {
       const body = req.body;
