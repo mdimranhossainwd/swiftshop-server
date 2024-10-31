@@ -41,6 +41,12 @@ async function run() {
       res.send(result);
     });
 
+    // Get Buy a product and saved this data to DB
+    app.get("/swiftshop/api/v1/carts", async (req, res) => {
+      const cursor = await cartsCollection.find().toArray();
+      res.send(cursor);
+    });
+
     // User's can posted review
     app.post("/swiftshop/api/v1/reviews", async (req, res) => {
       const body = req.body;
