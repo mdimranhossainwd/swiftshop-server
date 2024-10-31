@@ -40,6 +40,12 @@ async function run() {
       res.send(result);
     });
 
+    // Get User's Posted All Review Data
+    app.get("/swiftshop/api/v1/reviews", async (req, res) => {
+      const cursor = await reviewsCollection.find().toArray();
+      res.send(cursor);
+    });
+
     // User's Order Data
     app.post("/swiftshop/api/v1/orders", async (req, res) => {
       const body = req.body;
