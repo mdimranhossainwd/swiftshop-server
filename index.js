@@ -53,10 +53,12 @@ async function run() {
       res.send(result);
     });
 
-    // Get All Orders Product All Data
+    // Get Order product data specefic user's email
     app.get("/swiftshop/api/v1/orders", async (req, res) => {
-      const cursor = await ordersCollection.find().toArray();
-      res.send(cursor);
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await ordersCollection.find(query).toArray();
+      res.send(result);
     });
 
     app.get("/swiftshop/api/v1/orders/:id", async (req, res) => {
