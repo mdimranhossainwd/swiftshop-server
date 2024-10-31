@@ -59,7 +59,6 @@ async function run() {
       res.send(cursor);
     });
 
-    // Get User's Specific Order Product Data
     app.get("/swiftshop/api/v1/orders/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -78,6 +77,18 @@ async function run() {
         },
       };
       const result = await ordersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    //  Update Order Product status
+    app.patch("/swiftshop/api/v1/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const status = req.body;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: status,
+      };
+      const result = await ordersCollection.updateOne(query, updateDoc);
       res.send(result);
     });
 
