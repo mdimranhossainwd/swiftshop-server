@@ -34,11 +34,24 @@ async function run() {
     const reviewsCollection = dbCollection.collection("reviews");
     const cartsCollection = dbCollection.collection("carts");
 
-    // Buy a product and saved this data to DB
+    // Add or Update Cart Product
     app.post("/swiftshop/api/v1/carts", async (req, res) => {
-      const body = req.body;
-      const result = await cartsCollection.insertOne(body);
-      res.send(result);
+      const { _id, email, quantity } = req.body;
+      const existingProduct = await cartsCollection.findOne({ _id, email });
+
+      if (existingProduct) {
+        const result = await cartsCollection.updateOne(
+          { _id, email },
+          { $inc: { quantity: quantity || 1 } }
+        );
+        res.send(result);
+      } else {
+        const result = await cartsCollection.insertOne({
+          ...req.body,
+          quantity: 1,
+        });
+        res.send(result);
+      }
     });
 
     // Get Buy a product and saved this data to DB
