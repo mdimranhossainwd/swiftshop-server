@@ -34,6 +34,13 @@ async function run() {
     const reviewsCollection = dbCollection.collection("reviews");
     const cartsCollection = dbCollection.collection("carts");
 
+    // User's Order Data
+    app.post("/swiftshop/api/v1/orders", async (req, res) => {
+      const body = req.body;
+      const result = await ordersCollection.insertOne(body);
+      res.send(result);
+    });
+
     // Add or Update Cart Product
     app.post("/swiftshop/api/v1/carts", async (req, res) => {
       const { _id, email, quantity } = req.body;
@@ -62,6 +69,14 @@ async function run() {
       res.send(result);
     });
 
+    // Delete to a Cart procuts data in DB
+    app.delete("/swiftshop/api/v1/carts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const cursor = await cartsCollection.deleteOne(query);
+      res.send(cursor);
+    });
+
     // User's can posted review
     app.post("/swiftshop/api/v1/reviews", async (req, res) => {
       const body = req.body;
@@ -73,13 +88,6 @@ async function run() {
     app.get("/swiftshop/api/v1/reviews", async (req, res) => {
       const cursor = await reviewsCollection.find().toArray();
       res.send(cursor);
-    });
-
-    // User's Order Data
-    app.post("/swiftshop/api/v1/orders", async (req, res) => {
-      const body = req.body;
-      const result = await ordersCollection.insertOne(body);
-      res.send(result);
     });
 
     // Get Order product data specefic user's email
