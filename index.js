@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
+const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -43,22 +44,9 @@ async function run() {
 
     // Add or Update Cart Product
     app.post("/swiftshop/api/v1/carts", async (req, res) => {
-      const { _id, email, quantity } = req.body;
-      const existingProduct = await cartsCollection.findOne({ _id, email });
-
-      if (existingProduct) {
-        const result = await cartsCollection.updateOne(
-          { _id, email },
-          { $inc: { quantity: quantity || 1 } }
-        );
-        res.send(result);
-      } else {
-        const result = await cartsCollection.insertOne({
-          ...req.body,
-          quantity: 1,
-        });
-        res.send(result);
-      }
+      const body = req.body;
+      const result = await cartsCollection.insertOne(body);
+      res.send(result);
     });
 
     // Get Buy a product and saved this data to DB
@@ -69,19 +57,18 @@ async function run() {
       res.send(result);
     });
 
-    // Delete to a Cart procuts data in DB
-    app.delete("/swiftshop/api/v1/carts/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const cursor = await cartsCollection.deleteOne(query);
-      res.send(cursor);
-    });
-
     // User's can posted review
     app.post("/swiftshop/api/v1/reviews", async (req, res) => {
       const body = req.body;
       const result = await reviewsCollection.insertOne(body);
       res.send(result);
+    });
+
+    app.delete("/swiftshop/api/v1/carts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const cursor = await cartsCollection.deleteOne(query);
+      res.send(cursor);
     });
 
     // Get User's Posted All Review Data
