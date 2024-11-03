@@ -64,6 +64,7 @@ async function run() {
       res.send(result);
     });
 
+    // Only user's deleted his carts pages data
     app.delete("/swiftshop/api/v1/carts/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -85,6 +86,7 @@ async function run() {
       res.send(result);
     });
 
+    // Get specific user's data
     app.get("/swiftshop/api/v1/orders/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
