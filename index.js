@@ -42,6 +42,22 @@ async function run() {
       res.send(result);
     });
 
+    // Cart's Data quantity Update
+    app.patch("/swiftshop/api/v1/carts/:id", async (req, res) => {
+      const id = req.params.id;
+      const { quantity, price } = req.body;
+      const query = { _id: new ObjectId(id) };
+      const currentItem = await cartsCollection.findOne(query);
+      const updateDoc = {
+        $set: {
+          quantity: quantity,
+          price: price !== undefined ? price : currentItem.price,
+        },
+      };
+      const result = await cartsCollection.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
     // Add or Update Cart Product
     app.post("/swiftshop/api/v1/carts", async (req, res) => {
       const body = req.body;
