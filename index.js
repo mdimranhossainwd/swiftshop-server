@@ -143,6 +143,13 @@ async function run() {
       res.send(result);
     });
 
+    // Get user's Role Data
+    app.get("/swiftshop/api/v1/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await usersCollection.findOne({ email });
+      res.send(result);
+    });
+
     // Get Features Product All Data
     app.get("/swiftshop/api/v1/features", async (req, res) => {
       const cursor = await featuresCollection.find().toArray();
