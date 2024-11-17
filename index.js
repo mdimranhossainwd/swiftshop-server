@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const stripe = require("stripe")(process.env.VITE_SWIFTSHOP_STRIPE_SK_TEST_KEY);
 
 const corsOptions = {
   origin: ["http://localhost:5173", "http://localhost:5174"],
@@ -34,6 +35,26 @@ async function run() {
     const blogsCollection = dbCollection.collection("blogs");
     const reviewsCollection = dbCollection.collection("reviews");
     const cartsCollection = dbCollection.collection("carts");
+
+    // Payment post method
+    app.post("/swiftshop/api/v1/create-payment-intent", async (req, res) => {
+      const { price } = req.body;
+      const amount = Math.round(parseFloat(price) * 100);
+      console.log(amount);
+      try {
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount: amount,
+          currency: "usd",
+          automatic_payment_methods: {
+            enabled: true,
+          },
+        });
+        res.send({ clientSecret: paymentIntent.client_secret });
+      } catch (error) {
+        console.error("Error creating payment intent:", error);
+        res.status(500).send({ error: "Payment creation failed" });
+      }
+    });
 
     // User's Order Data
     app.post("/swiftshop/api/v1/orders", async (req, res) => {
