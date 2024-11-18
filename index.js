@@ -35,6 +35,7 @@ async function run() {
     const blogsCollection = dbCollection.collection("blogs");
     const reviewsCollection = dbCollection.collection("reviews");
     const cartsCollection = dbCollection.collection("carts");
+    const paymentsCollection = dbCollection.collection("payments");
 
     // Payment post method
     app.post("/swiftshop/api/v1/create-payment-intent", async (req, res) => {
@@ -60,6 +61,13 @@ async function run() {
     app.post("/swiftshop/api/v1/orders", async (req, res) => {
       const body = req.body;
       const result = await ordersCollection.insertOne(body);
+      res.send(result);
+    });
+
+    // User's Payment his choice product
+    app.post("/swiftshop/api/v1/payment", async (req, res) => {
+      const body = req.body;
+      const result = await paymentsCollection.insertOne(body);
       res.send(result);
     });
 
