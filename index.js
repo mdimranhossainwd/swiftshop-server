@@ -178,6 +178,12 @@ async function run() {
       res.send(result);
     });
 
+    // Get All User's
+    app.get("/swiftshop/api/v1/users", async (req, res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    });
+
     // Get user's Role Data
     app.get("/swiftshop/api/v1/users/:email", async (req, res) => {
       const email = req.params.email;
