@@ -71,6 +71,12 @@ async function run() {
       res.send(result);
     });
 
+    // Get User's Posted Payments Data
+    app.get("/swiftshop/api/v1/payment", async (req, res) => {
+      const cursor = await paymentsCollection.find().toArray();
+      res.send(cursor);
+    });
+
     // Cart's Data quantity Update
     app.patch("/swiftshop/api/v1/carts/:id", async (req, res) => {
       const id = req.params.id;
