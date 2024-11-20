@@ -38,14 +38,12 @@ async function run() {
     const paymentsCollection = dbCollection.collection("payments");
     const productsCollection = dbCollection.collection("products");
 
-
-    // Admin post a product 
+    // Admin post a product
     app.post("/swiftshop/api/v1/products", async (req, res) => {
       const body = req.body;
       const result = await productsCollection.insertOne(body);
       res.send(result);
     });
-
 
     // Payment post method
     app.post("/swiftshop/api/v1/create-payment-intent", async (req, res) => {
@@ -136,6 +134,12 @@ async function run() {
     // Get User's Posted All Review Data
     app.get("/swiftshop/api/v1/reviews", async (req, res) => {
       const cursor = await reviewsCollection.find().toArray();
+      res.send(cursor);
+    });
+
+    // Get All Orders Data
+    app.get("/swiftshop/api/v1/all-orders", async (req, res) => {
+      const cursor = await ordersCollection.find().toArray();
       res.send(cursor);
     });
 
