@@ -36,6 +36,16 @@ async function run() {
     const reviewsCollection = dbCollection.collection("reviews");
     const cartsCollection = dbCollection.collection("carts");
     const paymentsCollection = dbCollection.collection("payments");
+    const productsCollection = dbCollection.collection("products");
+
+
+    // Admin post a product 
+    app.post("/swiftshop/api/v1/products", async (req, res) => {
+      const body = req.body;
+      const result = await productsCollection.insertOne(body);
+      res.send(result);
+    });
+
 
     // Payment post method
     app.post("/swiftshop/api/v1/create-payment-intent", async (req, res) => {
