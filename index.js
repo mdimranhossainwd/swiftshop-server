@@ -218,6 +218,14 @@ async function run() {
       res.send(result);
     });
 
+    // Deleted a user's
+    app.delete("/swiftshop/api/v1/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const cursor = await usersCollection.deleteOne(query);
+      res.send(cursor);
+    });
+
     // Get user's Role Data
     app.get("/swiftshop/api/v1/users/:email", async (req, res) => {
       const email = req.params.email;
