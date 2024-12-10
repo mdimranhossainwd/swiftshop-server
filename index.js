@@ -39,7 +39,7 @@ async function run() {
     const productsCollection = dbCollection.collection("products");
 
     // Admin post a product
-    app.post("/swiftshop/api/v1/products", async (req, res) => {
+    app.post("/swiftshop/api/v1/add-products", async (req, res) => {
       const body = req.body;
       const result = await productsCollection.insertOne(body);
       res.send(result);
@@ -165,6 +165,8 @@ async function run() {
       res.send(cursor);
     });
 
+    // User's role changes
+
     // Order Product data update
     app.put("/swiftshop/api/v1/orders/:id", async (req, res) => {
       const id = req.params.id;
@@ -201,6 +203,18 @@ async function run() {
     // Get All User's
     app.get("/swiftshop/api/v1/users", async (req, res) => {
       const result = await usersCollection.find().toArray();
+      res.send(result);
+    });
+
+    // User's Role changes
+    app.patch("/swiftshop/api/v1/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const role = req.body;
+      const query = { _id: new ObjectId(id) };
+      const updateRole = {
+        $set: role,
+      };
+      const result = await usersCollection.updateOne(query, updateRole);
       res.send(result);
     });
 
