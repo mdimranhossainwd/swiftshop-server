@@ -79,6 +79,14 @@ async function run() {
       res.send(result);
     });
 
+    // User specific succeeded email /
+    app.get("/swiftshop/api/v1/payment", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email, status: "succeeded" };
+      const cursor = await paymentsCollection.find(query).toArray();
+      res.send(cursor);
+    });
+
     // Get User's Posted Payments Data
     app.get("/swiftshop/api/v1/payment", async (req, res) => {
       const cursor = await paymentsCollection.find().toArray();
@@ -157,15 +165,13 @@ async function run() {
       res.send(result);
     });
 
-    // Get specific user's data
+    // Get specific ID's data
     app.get("/swiftshop/api/v1/orders/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const cursor = await ordersCollection.findOne(query);
       res.send(cursor);
     });
-
-    // User's role changes
 
     // Order Product data update
     app.put("/swiftshop/api/v1/orders/:id", async (req, res) => {
