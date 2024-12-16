@@ -45,6 +45,12 @@ async function run() {
       res.send(result);
     });
 
+    // Get Admin Trending Products
+    app.get("/swiftshop/api/v1/add-products", async (req, res) => {
+      const cursor = await productsCollection.find().toArray();
+      res.send(cursor);
+    });
+
     // Payment post method
     app.post("/swiftshop/api/v1/create-payment-intent", async (req, res) => {
       const { price } = req.body;
