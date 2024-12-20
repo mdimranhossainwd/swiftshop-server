@@ -94,7 +94,7 @@ async function run() {
     });
 
     // Get User's Posted Payments Data
-    app.get("/swiftshop/api/v1/payment", async (req, res) => {
+    app.get("/swiftshop/api/v1/payments", async (req, res) => {
       const cursor = await paymentsCollection.find().toArray();
       res.send(cursor);
     });
