@@ -51,6 +51,17 @@ async function run() {
       res.send(cursor);
     });
 
+    app.patch("/swiftshop/api/v1/add-products/:id", async (req, res) => {
+      const id = req.params.id;
+      const orderStatus = req.body;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: orderStatus,
+      };
+      const result = await productsCollection.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
     // Payment post method
     app.post("/swiftshop/api/v1/create-payment-intent", async (req, res) => {
       const { price } = req.body;
