@@ -51,14 +51,14 @@ async function run() {
       res.send(cursor);
     });
 
-    app.patch("/swiftshop/api/v1/add-products/:id", async (req, res) => {
+    app.patch("/swiftshop/api/v1/payments/:id", async (req, res) => {
       const id = req.params.id;
       const orderStatus = req.body;
       const query = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: orderStatus,
       };
-      const result = await productsCollection.updateOne(query, updateDoc);
+      const result = await paymentsCollection.updateOne(query, updateDoc);
       res.send(result);
     });
 
