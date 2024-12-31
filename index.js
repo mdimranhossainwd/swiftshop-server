@@ -204,6 +204,18 @@ async function run() {
       res.send(result);
     });
 
+    // User's Information Update
+    app.put("/swiftshop/api/v1/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const user = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: { ...user },
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     //  Update Order Product status
     app.patch("/swiftshop/api/v1/orders/:id", async (req, res) => {
       const id = req.params.id;
