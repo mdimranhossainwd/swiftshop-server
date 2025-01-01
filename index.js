@@ -51,6 +51,20 @@ async function run() {
       res.send(cursor);
     });
 
+    // Update Admin Specific Product
+    app.put("/swiftshop/api/v1/add-products/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const addProductData = req.body;
+      const updateDoc = {
+        $set: {
+          ...addProductData,
+        },
+      };
+      const result = await productsCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     app.patch("/swiftshop/api/v1/payments/:id", async (req, res) => {
       const id = req.params.id;
       const orderStatus = req.body;
