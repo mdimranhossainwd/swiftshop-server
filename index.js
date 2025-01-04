@@ -45,6 +45,14 @@ async function run() {
       res.send(result);
     });
 
+    //  Get Delivered all product
+    app.get("/swiftshop/api/v1/delivered-product", async (req, res) => {
+      const cursor = await paymentsCollection
+        .find({ orderStatus: "Delivered" })
+        .toArray();
+      res.send(cursor);
+    });
+
     // Get Admin Trending Products
     app.get("/swiftshop/api/v1/add-products", async (req, res) => {
       const cursor = await productsCollection.find().toArray();
