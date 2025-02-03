@@ -128,8 +128,21 @@ async function run() {
 
     // Get User's Posted Payments Data
     app.get("/swiftshop/api/v1/payments", async (req, res) => {
-      const cursor = await paymentsCollection.find().toArray();
+      const size = parseInt(req.query.size);
+      const pages = parseInt(req.query.pages) - 1;
+      const cursor = await paymentsCollection
+        .find()
+        .skip(pages * size)
+        .limit(size)
+        .toArray();
       res.send(cursor);
+    });
+
+    app.get("/swiftshop/api/v1/products-count", async (req, res) => {
+      const search = req.query.search;
+      const filter = req.status; // Status check
+      const count = await paymentsCollection.countDocuments(filter);
+      res.send({ count });
     });
 
     // Cart's Data quantity Update
