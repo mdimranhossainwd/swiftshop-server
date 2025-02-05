@@ -130,8 +130,19 @@ async function run() {
     app.get("/swiftshop/api/v1/payments", async (req, res) => {
       const size = parseInt(req.query.size);
       const pages = parseInt(req.query.pages) - 1;
+      const filter = req.query.filter;
+      const sort = req.query.sort;
+      let options = {};
+      let query = {};
+      if (filter) query = { orderStatus: filter };
+      if (sort)
+        options = {
+          sort: { formattedDate: sort === "asc" ? 1 : -1 },
+        };
+      console.log(options);
+
       const cursor = await paymentsCollection
-        .find()
+        .find(query)
         .skip(pages * size)
         .limit(size)
         .toArray();
