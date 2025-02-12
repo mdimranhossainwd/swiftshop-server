@@ -283,8 +283,21 @@ async function run() {
 
     // Get All User's
     app.get("/swiftshop/api/v1/users", async (req, res) => {
-      const result = await usersCollection.find().toArray();
+      const size = parseInt(req.query.size);
+      const pages = parseInt(req.query.pages) - 1;
+      const result = await usersCollection
+        .find()
+        .skip(pages * size)
+        .limit(size)
+        .toArray();
       res.send(result);
+    });
+
+    // Get User's Count Data
+    app.get("/swiftshop/api/v1/users-count", async (req, res) => {
+      const filter = req.role;
+      const count = await usersCollection.countDocuments(filter);
+      res.send({ count });
     });
 
     // User's Role changes
