@@ -285,8 +285,11 @@ async function run() {
     app.get("/swiftshop/api/v1/users", async (req, res) => {
       const size = parseInt(req.query.size);
       const pages = parseInt(req.query.pages) - 1;
+      const filter = req.query.filter;
+      let query = {};
+      if (filter) query = { role: filter };
       const result = await usersCollection
-        .find()
+        .find(query)
         .skip(pages * size)
         .limit(size)
         .toArray();
