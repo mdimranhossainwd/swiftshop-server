@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
@@ -14,6 +16,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 
 const uri = `mongodb+srv://${process.env.SWIFT_SHOP_USER_NAME}:${process.env.SWIFT_SHOP_PASSWORD}@cluster0.2xcsswz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -37,6 +40,21 @@ async function run() {
     const cartsCollection = dbCollection.collection("carts");
     const paymentsCollection = dbCollection.collection("payments");
     const productsCollection = dbCollection.collection("products");
+
+    // JWT Generated
+    app.post("/swifshop/api/v1/jwt", async (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.VITE_JSON_WEB_TOKEN_SECRET, {
+        expiresIn: "14d",
+      });
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          samesite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        })
+        .send({ success: true });
+    });
 
     // Admin post a product
     app.post("/swiftshop/api/v1/add-products", async (req, res) => {
