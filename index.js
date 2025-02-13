@@ -20,6 +20,26 @@ app.use(cookieParser());
 
 const uri = `mongodb+srv://${process.env.SWIFT_SHOP_USER_NAME}:${process.env.SWIFT_SHOP_PASSWORD}@cluster0.2xcsswz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
+// Verify token
+const verifyToken = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).send({ message: "unauthorized access" });
+  if (token) {
+    jwt.verify(
+      token,
+      process.env.VITE_JSON_WEB_TOKEN_SECRET,
+      (err, decoded) => {
+        if (err) {
+          returnres.status(401).send({ status: "unauthorized access" });
+        }
+        console.log(decoded);
+        req.user = decoded;
+        next();
+      }
+    );
+  }
+};
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -42,7 +62,7 @@ async function run() {
     const productsCollection = dbCollection.collection("products");
 
     // JWT Generated
-    app.post("/swifshop/api/v1/jwt", async (req, res) => {
+    app.post("/swiftshop/api/v1/jwt", async (req, res) => {
       const user = req.body;
       const token = jwt.sign(user, process.env.VITE_JSON_WEB_TOKEN_SECRET, {
         expiresIn: "14d",
@@ -52,6 +72,17 @@ async function run() {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           samesite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        })
+        .send({ success: true });
+    });
+
+    app.get("/swiftshop/api/v1/logout", async (req, res) => {
+      res
+        .cookie("token", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          samesite: process.env.NODE_ENV === "production" ? "none" : "strict",
+          maxAge: 0,
         })
         .send({ success: true });
     });
@@ -103,24 +134,28 @@ async function run() {
     });
 
     // Payment post method
-    app.post("/swiftshop/api/v1/create-payment-intent", async (req, res) => {
-      const { price } = req.body;
-      const amount = Math.round(parseFloat(price) * 100);
-      console.log(amount);
-      try {
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount: amount,
-          currency: "usd",
-          automatic_payment_methods: {
-            enabled: true,
-          },
-        });
-        res.send({ clientSecret: paymentIntent.client_secret });
-      } catch (error) {
-        console.error("Error creating payment intent:", error);
-        res.status(500).send({ error: "Payment creation failed" });
+    app.post(
+      "/swiftshop/api/v1/create-payment-intent",
+
+      async (req, res) => {
+        const { price } = req.body;
+        const amount = Math.round(parseFloat(price) * 100);
+        console.log(amount);
+        try {
+          const paymentIntent = await stripe.paymentIntents.create({
+            amount: amount,
+            currency: "usd",
+            automatic_payment_methods: {
+              enabled: true,
+            },
+          });
+          res.send({ clientSecret: paymentIntent.client_secret });
+        } catch (error) {
+          console.error("Error creating payment intent:", error);
+          res.status(500).send({ error: "Payment creation failed" });
+        }
       }
-    });
+    );
 
     // User's Order Data
     app.post("/swiftshop/api/v1/orders", async (req, res) => {
@@ -137,7 +172,7 @@ async function run() {
     });
 
     // User specific succeeded email /
-    app.get("/swiftshop/api/v1/payment", async (req, res) => {
+    app.get("/swiftshop/api/v1/payment", verifyToken, async (req, res) => {
       const email = req.query.email;
       const query = { email: email, status: "succeeded" };
       const cursor = await paymentsCollection.find(query).toArray();
@@ -145,7 +180,7 @@ async function run() {
     });
 
     // Get User's Posted Payments Data
-    app.get("/swiftshop/api/v1/payments", async (req, res) => {
+    app.get("/swiftshop/api/v1/payments", verifyToken, async (req, res) => {
       const size = parseInt(req.query.size);
       const pages = parseInt(req.query.pages) - 1;
       const filter = req.query.filter;
@@ -198,7 +233,7 @@ async function run() {
     });
 
     // Get Buy a product and saved this data to DB
-    app.get("/swiftshop/api/v1/carts", async (req, res) => {
+    app.get("/swiftshop/api/v1/carts", verifyToken, async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const result = await cartsCollection.find(query).toArray();
