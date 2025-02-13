@@ -10,7 +10,11 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const stripe = require("stripe")(process.env.VITE_SWIFTSHOP_STRIPE_SK_TEST_KEY);
 
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:5174"],
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://swift-shop-ad56f.web.app",
+  ],
   credentials: true,
   optionSuccessStatus: 200,
 };
