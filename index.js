@@ -237,7 +237,7 @@ async function run() {
     });
 
     // Get Buy a product and saved this data to DB
-    app.get("/swiftshop/api/v1/carts", verifyToken, async (req, res) => {
+    app.get("/swiftshop/api/v1/carts", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const result = await cartsCollection.find(query).toArray();
