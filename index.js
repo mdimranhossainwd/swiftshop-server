@@ -169,7 +169,7 @@ async function run() {
     });
 
     // User specific succeeded email /
-    app.get("/swiftshop/api/v1/payment", async (req, res) => {
+    app.get("/swiftshop/api/v1/payment", verifyToken, async (req, res) => {
       const email = req.query.email;
       const query = { email: email, status: "succeeded" };
       const cursor = await paymentsCollection.find(query).toArray();
