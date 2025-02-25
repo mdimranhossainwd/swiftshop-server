@@ -169,7 +169,7 @@ async function run() {
     });
 
     // User specific succeeded email /
-    app.get("/swiftshop/api/v1/payment", verifyToken, async (req, res) => {
+    app.get("/swiftshop/api/v1/payment", async (req, res) => {
       const email = req.query.email;
       const query = { email: email, status: "succeeded" };
       const cursor = await paymentsCollection.find(query).toArray();
@@ -177,7 +177,7 @@ async function run() {
     });
 
     // Get User's Posted Payments Data
-    app.get("/swiftshop/api/v1/payments", verifyToken, async (req, res) => {
+    app.get("/swiftshop/api/v1/payments", async (req, res) => {
       const size = parseInt(req.query.size);
       const pages = parseInt(req.query.pages) - 1;
       const filter = req.query.filter;
